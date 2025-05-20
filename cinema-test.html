@@ -1,154 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Đặt vé xem phim</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .seat {
-      width: 40px;
-      height: 40px;
-      margin: 5px;
-      background-color: #444;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0.375rem;
-      cursor: pointer;
-      color: white;
-      transition: background-color 0.3s;
-    }
-    .seat.selected {
-      background-color: #dc2626;
-    }
-    .seat.taken {
-      background-color: #6b7280;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
-<body class="bg-black text-white">
-  <header class="bg-red-700 text-center py-4 text-white text-3xl font-bold shadow">🎬 Đặt vé xem phim</header>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt vé xem phim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .seat {
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            background-color: #444;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s;
+            user-select: none;
+        }
 
-  <main class="container my-5 p-4 bg-zinc-900 rounded shadow-lg">
-    <div class="mb-4 row g-3">
-      <div class="col-md-6">
-        <label class="form-label">Chọn phim:</label>
-        <select id="movie" class="form-select bg-zinc-800 text-white border-red-700" onchange="renderSeats()">
-          <option value="Avengers">Avengers</option>
-          <option value="Spiderman">Spiderman</option>
-          <option value="Conan">Detective Conan</option>
-        </select>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Chọn suất:</label>
-        <select id="time" class="form-select bg-zinc-800 text-white border-red-700" onchange="renderSeats()">
-          <option value="10:00">10:00</option>
-          <option value="14:00">14:00</option>
-          <option value="18:00">18:00</option>
-        </select>
-      </div>
-    </div>
+        .seat:hover:not(.taken):not(.selected) {
+            background-color: #ef4444;
+        }
 
-    <div class="mb-4">
-      <h3 class="text-lg font-semibold mb-2">Chọn ghế:</h3>
-      <div id="seat-container" class="bg-zinc-800 p-4 rounded"></div>
-    </div>
+        .seat.selected {
+            background-color: #dc2626;
+        }
 
-    <div class="mb-4 text-white">
-      <p><span class="inline-block w-6 h-6 bg-[#444] rounded mr-2"></span> Ghế khả dụng</p>
-      <p><span class="inline-block w-6 h-6 bg-gray-500 rounded mr-2"></span> Ghế đã đặt</p>
-      <p><span class="inline-block w-6 h-6 bg-red-700 rounded mr-2"></span> Ghế đang chọn</p>
-    </div>
-
-    <div class="mb-4 text-center">
-      <button onclick="bookTickets()" class="btn btn-danger px-4 py-2">🎟️ Đặt vé</button>
-    </div>
-
-    <div class="mb-4">
-      <h3 class="text-lg font-semibold mb-2">Kết quả:</h3>
-      <div id="result" class="p-3 bg-zinc-800 border-l-4 border-red-700"></div>
-      <div id="total" class="mt-2 text-lg font-bold text-red-500"></div>
-    </div>
-  </main>
-
-  <script>
-    const seatContainer = document.getElementById("seat-container");
-    const resultDiv = document.getElementById("result");
-    const totalDiv = document.getElementById("total");
-    const rows = 5, cols = 8;
-    const pricePerSeat = 50000;
-
-    const bookedSeats = {
-      Avengers: {
-        "10:00": ["A1", "B3"],
-        "14:00": ["C2"],
-        "18:00": []
-      },
-      Spiderman: {
-        "10:00": ["B2"],
-        "14:00": ["C4", "D1"],
-        "18:00": []
-      },
-      Conan: {
-        "10:00": [],
-        "14:00": ["A4"],
-        "18:00": ["E1"]
-      }
-    };
-
-    function renderSeats() {
-      seatContainer.innerHTML = "";
-      const movie = document.getElementById("movie").value;
-      const time = document.getElementById("time").value;
-      const takenSeats = bookedSeats[movie][time] || [];
-
-      for (let row = 0; row < rows; row++) {
-        const rowLetter = String.fromCharCode(65 + row);
-        for (let col = 1; col <= cols; col++) {
-          const seatId = rowLetter + col;
-          const seat = document.createElement("div");
-          seat.className = "seat";
-          seat.textContent = seatId;
-          seat.dataset.id = seatId;
-
-          if (takenSeats.includes(seatId)) {
-            seat.classList.add("taken");
-          } else {
-            seat.addEventListener("click", () => {
-              seat.classList.toggle("selected");
-            });
+        .seat.taken {
+            background-color: #6b7280;
+            cursor: not-allowed;
+        }
+        @media (max-width: 576px) {
+          .seat {
+            width: 30px;
+            height: 30px;
+            margin: 3px;
+            font-size: 0.75rem;
           }
 
-          seatContainer.appendChild(seat);
+          header {
+            font-size: 1.75rem !important;
+            padding: 1rem !important;
+          }
+
+          main.container {
+            padding: 1rem !important;
+          }
+
+          h3.text-lg {
+            font-size: 1.125rem !important;
+          }
+
+          .mb-4 {
+            margin-bottom: 1rem !important;
+          }
+
+          body, main.container {
+            max-width: 100vw;
+            overflow-x: hidden;
+          }
         }
-        seatContainer.appendChild(document.createElement("br"));
-      }
-    }
+    </style>
+</head>
 
-    function bookTickets() {
-      const movie = document.getElementById("movie").value;
-      const time = document.getElementById("time").value;
-      const selected = document.querySelectorAll(".seat.selected");
-      if (selected.length === 0) {
-        alert("Vui lòng chọn ít nhất một ghế!");
-        return;
-      }
+<body class="bg-black text-white">
+    <header class="bg-red-700 text-center py-4 text-white text-3xl font-bold shadow">🎬 Đặt vé xem phim</header>
 
-      const seats = Array.from(selected).map(seat => seat.dataset.id);
-      const totalPrice = seats.length * pricePerSeat;
+    <main class="container my-5 p-4 bg-zinc-900 rounded shadow-lg">
+        <div class="mb-4 row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Chọn phim:</label>
+                <select id="movie" class="form-select bg-zinc-800 text-white border-red-700"
+                    onchange="onMovieOrTimeChange()">
+                    <option value="Avengers">Avengers</option>
+                    <option value="Spiderman">Spiderman</option>
+                    <option value="Conan">Detective Conan</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Chọn suất:</label>
+                <select id="time" class="form-select bg-zinc-800 text-white border-red-700"
+                    onchange="onMovieOrTimeChange()">
+                    <option value="10:00">10:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="18:00">18:00</option>
+                </select>
+            </div>
+        </div>
 
-      resultDiv.innerHTML = `Bạn đã đặt vé cho phim <b>${movie}</b> lúc <b>${time}</b><br>Ghế: <b>${seats.join(", ")}</b>`;
-      totalDiv.innerHTML = `Tổng tiền: <b>${totalPrice.toLocaleString()} VND</b>`;
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold mb-2">Chọn ghế:</h3>
+            <div id="seat-container" class="bg-zinc-800 p-4 rounded"></div>
+        </div>
 
-      // Cập nhật bookedSeats và làm lại giao diện
-      bookedSeats[movie][time] = bookedSeats[movie][time].concat(seats);
-      renderSeats();
-    }
+        <div class="mb-4 text-white">
+            <p><span class="inline-block w-6 h-6 bg-[#444] rounded mr-2"></span> Ghế khả dụng</p>
+            <p><span class="inline-block w-6 h-6 bg-gray-500 rounded mr-2"></span> Ghế đã đặt</p>
+            <p><span class="inline-block w-6 h-6 bg-red-700 rounded mr-2"></span> Ghế đang chọn</p>
+        </div>
 
-    window.onload = renderSeats;
-  </script>
+        <div class="mb-4 text-center">
+            <button onclick="bookTickets()" class="btn btn-danger px-4 py-2">🎟️ Đặt vé</button>
+        </div>
+
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold mb-2">Kết quả:</h3>
+            <div id="result" class="p-3 bg-zinc-800 border-l-4 border-red-700"></div>
+            <div id="total" class="mt-2 text-lg font-bold text-red-500"></div>
+        </div>
+
+        <div id="booking-message" class="mt-4 text-green-500 font-bold"></div>
+    </main>
+
+    <script>
+        const seatContainer = document.getElementById("seat-container");
+        const resultDiv = document.getElementById("result");
+        const totalDiv = document.getElementById("total");
+        const rows = 5, cols = 8;
+        const pricePerSeat = 50000;
+
+        let bookedSeats = {
+            Avengers: {
+                "10:00": ["A1", "B3"],
+                "14:00": ["C2"],
+                "18:00": []
+            },
+            Spiderman: {
+                "10:00": ["B2"],
+                "14:00": ["C4", "D1"],
+                "18:00": []
+            },
+            Conan: {
+                "10:00": [],
+                "14:00": ["A4"],
+                "18:00": ["E1"]
+            }
+        };
+
+        function loadBookedSeats() {
+            const data = localStorage.getItem('bookedSeats');
+            if (data) {
+                try {
+                    bookedSeats = JSON.parse(data);
+                } catch (e) {
+                    console.error("Lỗi khi đọc dữ liệu bookedSeats từ localStorage:", e);
+                }
+            }
+        }
+
+        function saveBookedSeats() {
+            localStorage.setItem('bookedSeats', JSON.stringify(bookedSeats));
+        }
+
+        function renderSeats() {
+            seatContainer.innerHTML = "";
+            const movie = document.getElementById("movie").value;
+            const time = document.getElementById("time").value;
+            const takenSeats = bookedSeats[movie]?.[time] || [];
+
+            for (let row = 0; row < rows; row++) {
+                const rowLetter = String.fromCharCode(65 + row);
+                for (let col = 1; col <= cols; col++) {
+                    const seatId = rowLetter + col;
+                    const seat = document.createElement("div");
+                    seat.className = "seat";
+                    seat.textContent = seatId;
+                    seat.dataset.id = seatId;
+
+                    if (takenSeats.includes(seatId)) {
+                        seat.classList.add("taken");
+                    } else {
+                        seat.addEventListener("click", () => {
+                            seat.classList.toggle("selected");
+                            updateSummary();
+                        });
+                    }
+
+                    seatContainer.appendChild(seat);
+                }
+                seatContainer.appendChild(document.createElement("br"));
+            }
+            updateSummary();
+            clearResult();
+        }
+
+        function updateSummary() {
+            const selected = document.querySelectorAll(".seat.selected");
+            const seats = Array.from(selected).map(seat => seat.dataset.id);
+            const totalPrice = seats.length * pricePerSeat;
+
+            if (seats.length > 0) {
+                totalDiv.innerHTML = `Bạn đã chọn <b>${seats.length}</b> ghế: <b>${seats.join(", ")}</b><br>Tổng tiền:
+                    <b>${totalPrice.toLocaleString()} VND</b>`;
+            } else {
+                totalDiv.innerHTML = "";
+            }
+        }
+
+        function clearResult() {
+            resultDiv.innerHTML = "";
+        }
+
+        function onMovieOrTimeChange() {
+            renderSeats();
+        }
+
+        function bookTickets() {
+            const movie = document.getElementById("movie").value;
+            const time = document.getElementById("time").value;
+            const selected = document.querySelectorAll(".seat.selected");
+            if (selected.length === 0) {
+                alert("Vui lòng chọn ít nhất một ghế!");
+                return;
+            }
+
+            if (!confirm(`Bạn có chắc chắn muốn đặt ${selected.length} ghế cho phim "${movie}" lúc ${time}?`)) {
+                return;
+            }
+
+            const seats = Array.from(selected).map(seat => seat.dataset.id);
+            const totalPrice = seats.length * pricePerSeat;
+
+            if (!bookedSeats[movie]) bookedSeats[movie] = {};
+            if (!bookedSeats[movie][time]) bookedSeats[movie][time] = [];
+            bookedSeats[movie][time] = bookedSeats[movie][time].concat(seats);
+
+            saveBookedSeats();
+
+            const message = `Bạn đã đặt vé thành công cho phim ${movie} lúc ${time}. Ghế: ${seats.join(", ")}. Tổng tiền: ${totalPrice.toLocaleString()} VND`;
+            document.getElementById("booking-message").textContent = message;
+
+            resultDiv.innerHTML = `🎉 Bạn đã đặt vé thành công cho phim <b>${movie}</b> lúc <b>${time}</b><br>Ghế:
+                <b>${seats.join(", ")}</b>`;
+            totalDiv.innerHTML = `Tổng tiền: <b>${totalPrice.toLocaleString()} VND</b>`;
+
+            renderSeats();
+        }
+
+        window.onload = () => {
+            loadBookedSeats();
+            renderSeats();
+        };
+    </script>
 </body>
+
 </html>
